@@ -1,0 +1,3 @@
+[submodule "rtc_replication_test"]
+	path = rtc_replication_test
+	url = https://github.com/futail2a/rtc_replication_test.git
