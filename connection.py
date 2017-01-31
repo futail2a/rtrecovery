@@ -5,8 +5,14 @@ from rtshell import rtdis
 
 
 class Connection(object):
-    #Connection data set    
-        
+    """
+    This class defines a connection of a primary component.
+    
+    @param __source_comp_path: Primary component path
+    @param __source_port_name: Source port of this connection
+    @param __target_comp_path: Destination component path
+    @param __target_port_name: Destination port of this connection
+    """    
     def get_source_comp_path(self):
         return self.__source_comp_path
     
@@ -20,6 +26,11 @@ class Connection(object):
         return self.__target_port_name
     
     def disconn_target_comp(self, comp_path):
+        """
+        Disconnect all connections of comp_path component
+        
+        @arg comp_path: Disconnection target component
+        """
         #diservice_connect all connection
         tmp = sys.argv
         sys.argv = [sys.argv[0], comp_path]
@@ -32,8 +43,9 @@ class Connection(object):
         
                 
 class DataFlowConnection(Connection):
-    #Data flow connection
-    
+    """
+    Data flow connection
+    """
     def __init__(self, source_comp_path, source_port_name, target_comp_path, target_port_name,
                   data_flow_type,subscription_type):
         self.__source_comp_path   = source_comp_path
@@ -75,8 +87,9 @@ class DataFlowConnection(Connection):
         print "succeeded disconnection"
 
 class ServicePortConnection(Connection):
-    #Service port connection
-    
+    """
+    Service port connection
+    """
     def __init__(self, source_comp_path, source_port_name, target_comp_path, target_port_name):
         self.__source_comp_path   = source_comp_path
         self.__source_port_name   = source_port_name
