@@ -8,28 +8,30 @@ from connection import ServicePortConnection as spc
 
 
 class RecoveryManager():
-   """Managing replicated components groups
+    """Managing replicated components groups
 
     :param __rtsp: RTSProfile
     :param __repgroups: List of ReplicaGroup
     """
     #
     def __init__(self, profile):
-        """RecoveryManager should have one RTSystemProfile
+        """RecoveryManager obtain system information by a RTSystemProfile.
+        @param profile: file path of rtsprofile file (.xml only)
         """
         with open(profile) as f:
             self.__rtsp = rtsprofile.rts_profile.RtsProfile(xml_spec = f)
         self.__repgroups = []
     
     def repgroups(self):
-        """Setter of __repgrouops
+        """Getter of __repgrouops
         """
         return self.__repgroups
     
     def get_target_repgroup(self, name):
         """
-        Return a same name of repgroup in self.__repgroups
-        If there were not one, return None
+        Return a same name of repgroup in self.__repgroups.
+        If there were not one, return None.
+        @param name: target group name
         """
         for group in self.__repgroups:
             if group.name == name:
@@ -38,8 +40,10 @@ class RecoveryManager():
     
     def conf_getter(self, comp, conf_name):
         """
-        Return configuration data named conf_name in the comp
-        If it were not, return None
+        Return configuration data named conf_name in the comp.
+        If it were not, return None.
+        @param comp: target component
+        @param conf_name: target configuration parameter name
         """
         for cfg in comp.configuration_sets[0].configuration_data:
             if cfg.name == conf_name:
@@ -48,9 +52,9 @@ class RecoveryManager():
             
     def init(self):
         """
-        Initialize repgoups
-        Add repgroup to self.__repgroups in rtsp
-        Components' configuration that named "group_name" are used
+        Initialize repgoups.
+        Add repgroup to self.__repgroups in rtsp.
+        Components' configuration that named "group_name" are used.
         """
         for c in self.__rtsp.components:
             g_name =  self.conf_getter(c, "group_name")
@@ -73,6 +77,7 @@ class RecoveryManager():
     def find_comp_by_path(self, path):
         """
         Find a component from rtsp with a  path of the component
+        @param path: path of target component
         """
         for c in self.__rtsp.components:
             #print c.path_uri
@@ -81,7 +86,8 @@ class RecoveryManager():
             
     def extract_connected_ports(self, comp):
         """
-        Create a list of data that describe all comp's connection 
+        Create a list of data that describe all comp's connection
+        @param comp: target comp
         """
         connected_ports = []
         
@@ -127,6 +133,7 @@ class RecoveryManager():
     def recovery(self, fault_path):
         """
         Start recovery
+        @param fault_path: path of faulty component
         """
         fault_comp  = self.find_comp_by_path(fault_path)
         rep_group = self.get_target_repgroup(self.conf_getter(fault_comp, "group_name")) 
