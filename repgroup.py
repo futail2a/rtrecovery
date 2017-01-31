@@ -15,7 +15,7 @@ class ReplicaGroup:
     
         self.primary_state = {}
     
-    def init(self):
+    def find_primary_comp(self):
         #Set the smallest priority component as a current primary comp
         self.current_primary = self.comp_dic[min(self.comp_dic.keys())]
         

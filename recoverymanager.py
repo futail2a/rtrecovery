@@ -10,8 +10,8 @@ from connection import ServicePortConnection as spc
 class RecoveryManager():
     """Managing replicated components groups
 
-    :param __rtsp: RTSProfile
-    :param __repgroups: List of ReplicaGroup
+    @param __rtsp: RTSProfile
+    @param __repgroups: List of ReplicaGroup
     """
     #
     def __init__(self, profile):
@@ -21,8 +21,10 @@ class RecoveryManager():
         with open(profile) as f:
             self.__rtsp = rtsprofile.rts_profile.RtsProfile(xml_spec = f)
         self.__repgroups = []
+        
+        _init_repgroups()
     
-    def repgroups(self):
+    def get_repgroups(self):
         """Getter of __repgrouops
         """
         return self.__repgroups
@@ -38,7 +40,7 @@ class RecoveryManager():
                 return group
         return None
     
-    def conf_getter(self, comp, conf_name):
+    def get_conf(self, comp, conf_name):
         """
         Return configuration data named conf_name in the comp.
         If it were not, return None.
@@ -50,28 +52,28 @@ class RecoveryManager():
                 return cfg.data
         return None
             
-    def init(self):
+    def _init_repgroups(self):
         """
         Initialize repgoups.
         Add repgroup to self.__repgroups in rtsp.
         Components' configuration that named "group_name" are used.
         """
         for c in self.__rtsp.components:
-            g_name =  self.conf_getter(c, "group_name")
+            g_name =  self.get_conf(c, "group_name")
             if g_name:
                 repgroup = self.get_target_repgroup(g_name)
                 
                 if repgroup:
-                    repgroup.comp_dic[self.conf_getter(c, "priority")] = c
+                    repgroup.comp_dic[self.get_conf(c, "priority")] = c
 
                 else:
                     tmp = ReplicaGroup(g_name)
-                    tmp.comp_dic[self.conf_getter(c, "priority")] = c
+                    tmp.comp_dic[self.get_conf(c, "priority")] = c
                     self.__repgroups.append(tmp)
         
         #Initialize each repgroup
         for repgroup in self.__repgroups:    
-            repgroup.init()
+            repgroup.find_primary_comp()
             repgroup.primary_conns = self.extract_connected_ports(repgroup.current_primary)
     
     def find_comp_by_path(self, path):
@@ -136,7 +138,7 @@ class RecoveryManager():
         @param fault_path: path of faulty component
         """
         fault_comp  = self.find_comp_by_path(fault_path)
-        rep_group = self.get_target_repgroup(self.conf_getter(fault_comp, "group_name")) 
+        rep_group = self.get_target_repgroup(self.get_conf(fault_comp, "group_name")) 
         if fault_comp != rep_group.current_primary:
 		print "faulty comp is not primary comp"
 		return 1

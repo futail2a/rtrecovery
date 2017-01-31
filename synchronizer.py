@@ -22,7 +22,7 @@ class Synchronizer:
                     group.primary_state[value[0].split('.')[0]] = value[0].split('.')[1]
                 group.set_state_for_reps(self.__tree_dic[node.name])
                 
-    def observing(self, callback, comp):
+    def set_observed_comp(self, callback, comp):
         #Set observed nodes
         path, port = rtctree.path.parse_path("/" + comp.path_uri)
         t = rtctree.tree.RTCTree(paths=path)
@@ -38,7 +38,7 @@ class Synchronizer:
         self.__tree_dic = {}
         
         for group in self.__repgroups:
-            self.observing(self.conf_changed, group.current_primary)
+            self.set_observed_comp(self.conf_changed, group.current_primary)
         
         print "start observation"
     

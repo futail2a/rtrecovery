@@ -11,10 +11,9 @@ if __name__ == '__main__':
         #rm = recoverymanager.RecoveryManager("TestRepGroup.xml")
 
     rm = recoverymanager.RecoveryManager(sys.argv[1])
-    rm.init()
 
     sync = synchronizer.Synchronizer()
-    sync.set_repgroups(rm.repgroups())
+    sync.set_repgroups(rm.get_repgroups())
 
     while True:
         sync.start_obs()

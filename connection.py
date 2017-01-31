@@ -7,16 +7,16 @@ from rtshell import rtdis
 class Connection(object):
     #Connection data set    
         
-    def source_comp_path(self):
+    def get_source_comp_path(self):
         return self.__source_comp_path
     
-    def source_port_name(self):
+    def get_source_port_name(self):
         return self.__source_port_name
     
-    def target_comp_path(self):
+    def get_target_comp_path(self):
         return self.__target_comp_path
     
-    def target_port_name(self):
+    def get_target_port_name(self):
         return self.__target_port_name
     
     def disconn_target_comp(self, comp_path):
@@ -43,10 +43,10 @@ class DataFlowConnection(Connection):
         self.__data_flow_type     = data_flow_type
         self.__subscription_type  = subscription_type
     
-    def data_flow_type(self):
+    def get_data_flow_type(self):
         return self.__data_flow_type
     
-    def subscription_type(self):
+    def get_subscription_type(self):
         return self.__subscription_type
     
     def check_port_name(self, comp):
