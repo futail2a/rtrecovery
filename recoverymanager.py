@@ -8,41 +8,55 @@ from connection import ServicePortConnection as spc
 
 
 class RecoveryManager():
-    #Managing component redundant groups and switch replicate component to primary component
+   """Managing replicated components groups
+
+    :param __rtsp: RTSProfile
+    :param __repgroups: List of ReplicaGroup
+    """
+    #
     def __init__(self, profile):
-        #RM have one RTSystemProfile and some replicates component group
+        """RecoveryManager should have one RTSystemProfile
+        """
         with open(profile) as f:
             self.__rtsp = rtsprofile.rts_profile.RtsProfile(xml_spec = f)
         self.__repgroups = []
     
-    def repgroups(self): return self.__repgroups
+    def repgroups(self):
+        """Setter of __repgrouops
+        """
+        return self.__repgroups
     
     def get_target_repgroup(self, name):
-        #Return a same name repgroup in self.__repgroups
-        #If it were not, return None
+        """
+        Return a same name of repgroup in self.__repgroups
+        If there were not one, return None
+        """
         for group in self.__repgroups:
             if group.name == name:
                 return group
         return None
     
     def conf_getter(self, comp, conf_name):
-        #Return configuration data named conf_name in the comp
-        #If it were not, return None
+        """
+        Return configuration data named conf_name in the comp
+        If it were not, return None
+        """
         for cfg in comp.configuration_sets[0].configuration_data:
             if cfg.name == conf_name:
                 return cfg.data
         return None
             
     def init(self):
-        #Initialize repgoups
-        
-        #Add repgroup to self.__repgroups in rtsp
-        #Components' configuration that named "group_name" are used
+        """
+        Initialize repgoups
+        Add repgroup to self.__repgroups in rtsp
+        Components' configuration that named "group_name" are used
+        """
         for c in self.__rtsp.components:
             g_name =  self.conf_getter(c, "group_name")
             if g_name:
                 repgroup = self.get_target_repgroup(g_name)
-                #self.__repgroups�ɓ����̃O���[�v�������
+                
                 if repgroup:
                     repgroup.comp_dic[self.conf_getter(c, "priority")] = c
 
@@ -57,14 +71,18 @@ class RecoveryManager():
             repgroup.primary_conns = self.extract_connected_ports(repgroup.current_primary)
     
     def find_comp_by_path(self, path):
-        #Find a component from rtsp with a  path of the component
+        """
+        Find a component from rtsp with a  path of the component
+        """
         for c in self.__rtsp.components:
             #print c.path_uri
             if path == c.path_uri:
                 return c
             
     def extract_connected_ports(self, comp):
-        #Create a list of data that describe all comp's connection 
+        """
+        Create a list of data that describe all comp's connection 
+        """
         connected_ports = []
         
         #Data port
@@ -107,7 +125,9 @@ class RecoveryManager():
         return connected_ports
     
     def recovery(self, fault_path):
-        #Start recovery
+        """
+        Start recovery
+        """
         fault_comp  = self.find_comp_by_path(fault_path)
         rep_group = self.get_target_repgroup(self.conf_getter(fault_comp, "group_name")) 
         if fault_comp != rep_group.current_primary:
