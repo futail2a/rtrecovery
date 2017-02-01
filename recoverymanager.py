@@ -22,7 +22,7 @@ class RecoveryManager():
             self.__rtsp = rtsprofile.rts_profile.RtsProfile(xml_spec = f)
         self.__repgroups = []
         
-        _init_repgroups()
+        self._init_repgroups()
     
     def get_repgroups(self):
         """Getter of __repgrouops
