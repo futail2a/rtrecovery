@@ -4,8 +4,12 @@ import rtctree.tree
 import rtctree.path
 
 class Synchronizer:
-    #Managing synchromization of components internal states between primary comp and rep comps
-    
+    """
+    Synchronizing internal states between primary comp and rep comps
+    @param __repgroups: Observing replica group
+    @param __tree_dic: value:rtctree ket:component name
+    @param __nodes: nodes of rtctree
+    """
     def __init__(self):
         self.__repgroups = []
         
@@ -13,8 +17,10 @@ class Synchronizer:
         self.__repgroups = groups
     
     def conf_changed(self, node, value, cb_args):
-        #Definition of the call back function
-        #node:Rep1.rtc, value:('tlin.5', 'UPDATE_CONFIG_PARAM')
+        """
+        Definition of the call back function
+        value example: node:Rep1.rtc, value:('tlin.5', 'UPDATE_CONFIG_PARAM')
+        """
         if value[1] == 'UPDATE_CONFIG_PARAM':
             for group in self.__repgroups:
                 if group.current_primary.properties['naming.names'] == node.name:
@@ -23,7 +29,9 @@ class Synchronizer:
                 group.set_state_for_reps(self.__tree_dic[node.name])
                 
     def set_observed_comp(self, callback, comp):
-        #Set observed nodes
+        """
+        Set observed nodes
+        """
         path, port = rtctree.path.parse_path("/" + comp.path_uri)
         t = rtctree.tree.RTCTree(paths=path)
         self.__tree_dic[comp.properties['naming.names']] = t
@@ -33,7 +41,9 @@ class Synchronizer:
         
             
     def start_obs(self):
-        #Set nodes and trees and attach call back
+        """
+        Set nodes and trees and attach call back
+        """
         self.__nodes = []
         self.__tree_dic = {}
         
@@ -43,5 +53,8 @@ class Synchronizer:
         print "start observation"
     
     def stop_obs(self):
+        """
+        delete nodes and trees
+        """
         self.__nodes = []
         self.__tree_dic = {}
