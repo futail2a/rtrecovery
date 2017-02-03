@@ -22,11 +22,13 @@ if __name__ == '__main__':
         sync.stop_obs()
         try:
 	    s = time.clock()
-            rm.recovery(fault_path)
+            group = rm.recovery(fault_path)
         except:
             print 'recovery failed'
             continue
         print 'recovery succeed'
+        if group != 1:
+            sync.state_update(group)
 	e = time.clock()
 
         f = open('recovery_time.txt', 'a') 

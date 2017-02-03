@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rtshell import rtconf
-
+from rtshell import rtact
 
 class ReplicaGroup:
     """
@@ -36,7 +36,9 @@ class ReplicaGroup:
         Exclude the old primary component and set new primary component
         """
         self.comp_dic.pop(min(self.comp_dic.keys()))
-        self.current_primary = self.comp_dic[min(self.comp_dic.keys())]            
+        self.current_primary = self.comp_dic[min(self.comp_dic.keys())]
+        primary_path = "localhost/"+ self.current_primary.properties['naming.names']
+	rtact.main([primary_path])
         return self.current_primary               
         
     def switch_next_primary(self):
@@ -55,7 +57,7 @@ class ReplicaGroup:
         
     def set_state_for_reps(self,t):
         """
-        Broadcast the states of primary to replicates
+        Save the states of primary to replicates
         """
         for k in self.comp_dic.keys():
             if not k == min(self.comp_dic.keys()):

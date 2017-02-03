@@ -26,8 +26,13 @@ class Synchronizer:
                 if group.current_primary.properties['naming.names'] == node.name:
                     #value[0]=[conf name].[value]
                     group.primary_state[value[0].split('.')[0]] = value[0].split('.')[1]
-                group.set_state_for_reps(self.__tree_dic[node.name])
-                
+                #group.set_state_for_reps(self.__tree_dic[node.name])
+
+    def state_update(self,group):
+        self.set_observed_comp(self.conf_changed, group.current_primary)
+        #print self.__tree_dic
+	group.set_state_for_reps(self.__tree_dic[group.current_primary.properties['naming.names']])
+
     def set_observed_comp(self, callback, comp):
         """
         Set observed nodes

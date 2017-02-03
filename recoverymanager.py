@@ -146,5 +146,5 @@ class RecoveryManager():
         rep_group.find_next_primary()            
                 
         if rep_group.switch_next_primary():  
-            return 0
+            return rep_group
                 
